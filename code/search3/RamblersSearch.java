@@ -1,7 +1,9 @@
+package search3;
+
 public class RamblersSearch extends Search{
 
-    private TerrainMap map;
-    private Coords goal; 
+    private TerrainMap map; //the map to be used
+    private Coords goal;  //the goal to be reached
 
     public TerrainMap getMap() {
         return map;

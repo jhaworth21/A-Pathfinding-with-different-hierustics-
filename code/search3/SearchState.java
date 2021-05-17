@@ -1,3 +1,4 @@
+package search3;
 
 /**
 *	State in a state-space search
