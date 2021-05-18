@@ -8,11 +8,7 @@ package search3;
   * Example of how you load a terrain map
 */
 
-import java.util.*;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.Scanner;
 
 public class TestTerrainMap {
 

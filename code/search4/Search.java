@@ -54,7 +54,7 @@ public abstract class Search {
       // makes it currentNode & removes it from open
       System.out.println("Current node: "+currentNode.toString());
 
-      if (currentNode.goalPredicate(this)) return reportSuccess();  //success
+      if (currentNode.goalPredicate(this)) return reportSuccessE();  //success
       //change from search1 - call reportSuccess
 
       expand(); // go again
@@ -73,7 +73,7 @@ public abstract class Search {
   * @return indication of success or failure
   */
 
-  public  float runSearchE (SearchState initState, String strat) {
+  public  String runSearchE (SearchState initState, String strat) {
 
     initNode = new SearchNode(initState,0,0); // create initial node
     initNode.setGlobalCost(0); //change from search2
@@ -96,7 +96,7 @@ public abstract class Search {
 	    numIteration = numIteration + 1;
     }
     
-	return 0;  // out of the while loop - failure
+	return "0";  // out of the while loop - failure
 	}
 
 
@@ -242,7 +242,7 @@ public abstract class Search {
 
   		//change from search1
     	// report success - reconstruct path, convert to string & return
-      private String reportSuccess(){
+      private String reportSuccessE(){
 
 	    SearchNode n = currentNode;
 	    StringBuffer buf = new StringBuffer(n.toString());

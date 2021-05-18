@@ -1,4 +1,4 @@
-package search3;
+package search4;
 
 import java.util.ArrayList;
 
@@ -9,9 +9,10 @@ public class RamblersState extends SearchState{
     /**
      * Constructor
      */
-    public RamblersState(Coords coords, int lc){
+    public RamblersState(Coords coords, int lc, int rc){
         this.coords = coords;
         this.localCost = lc;
+        this.estRemCost = rc;
     }
 
     /**
@@ -40,23 +41,32 @@ public class RamblersState extends SearchState{
         RamblersSearch rSearch = (RamblersSearch) searcher;
         TerrainMap map = rSearch.getMap();
 
+        int goalX = rSearch.getGoal().getx();
+        int goalY = rSearch.getGoal().gety();
+
+        int estRemainCost;
+
         ArrayList<SearchState> neighbourNodes = new ArrayList<SearchState>();
 
         //if the coordinate next to the current value is less than the width of the map
         if(this.coords.getx()+1 < map.getWidth()){
             //adds the successor state to the list containing the neighbouring nodes
-            neighbourNodes.add(makeSearchState(this.coords.gety(), this.coords.getx()+1, map));
+            estRemainCost = getEstHeightDiff(this.coords.getx()+1, this.coords.gety(), goalX, goalY, map);
+            neighbourNodes.add(makeSearchState(this.coords.gety(), this.coords.getx()+1, map, estRemainCost));
         }
         //if the coordinate next to the current value is bigger than 0
         if(this.coords.getx()-1 > 0){
-            neighbourNodes.add(makeSearchState(this.coords.gety(), this.coords.getx()-1, map));
+            estRemainCost = getEstHeightDiff(this.coords.getx()-1, this.coords.gety(), goalX, goalY, map);
+            neighbourNodes.add(makeSearchState(this.coords.gety(), this.coords.getx()-1, map, estRemainCost));
         }
         //if the coordinate above the current value is less than the depth of the map
         if(this.coords.gety()+1 < map.getDepth()){
-            neighbourNodes.add(makeSearchState(this.coords.gety()+1, this.coords.getx(), map));
+            estRemainCost = getEstHeightDiff(this.coords.getx(), this.coords.gety()+1, goalX, goalY, map);
+            neighbourNodes.add(makeSearchState(this.coords.gety()+1, this.coords.getx(), map, estRemainCost));
         }
         if(this.coords.gety()-1 > 0){
-            neighbourNodes.add(makeSearchState(this.coords.gety()-1, this.coords.getx(), map));
+            estRemainCost = getEstHeightDiff(this.coords.getx(), this.coords.gety()-1, goalX, goalY, map);
+            neighbourNodes.add(makeSearchState(this.coords.gety()-1, this.coords.getx(), map, estRemainCost));
         }
         return neighbourNodes;
     }
@@ -97,7 +107,8 @@ public class RamblersState extends SearchState{
 
     @Override
     public String toString(){
-        return "x-coordinate: " + this.coords.getx() + " y-coord: " + this.coords.gety();
+        return "x-coordinate: " + this.coords.getx() + " y-coord: " + this.coords.gety() + 
+         "Remaining Cost: " + estRemCost;
     }
 
     /**
@@ -106,9 +117,10 @@ public class RamblersState extends SearchState{
      * @param yCoord    the y-coordinate of a new search state
      * @param xCoord    the x-coordinate of a new search state
      * @param m         the terrain map of the search to work out local costs
+     * @param estRemCost
      * @return  the search state created from the information provided
      */
-    private SearchState makeSearchState(int yCoord, int xCoord, TerrainMap m){
+    private SearchState makeSearchState(int yCoord, int xCoord, TerrainMap m, int estRemCost){
 
         //gets the local cost of the movement from the current state to another
         int cost = setLocalCost(yCoord, xCoord, m);
@@ -117,7 +129,7 @@ public class RamblersState extends SearchState{
         Coords newCoord = new Coords(yCoord, xCoord);
 
         //creates the new search state based on the coordinates and generated cost
-        SearchState stateToAdd = (SearchState) new RamblersState(newCoord, cost);
+        SearchState stateToAdd = (SearchState) new RamblersState(newCoord, cost, estRemCost);
 
         return stateToAdd;
     }
@@ -143,6 +155,31 @@ public class RamblersState extends SearchState{
         else{
             //otherwise the cost is 1 + the difference between the heights
             return 1 + (m.getTmap()[y][x] - m.getTmap()[thisY][thisX]);
+        }
+    }
+
+    private int getEstManhattan(int x, int y, int gx, int gy){
+        int diffX = Math.abs(gx - x);
+        int diffY = Math.abs(gy-y);
+
+        return diffX + diffY;
+    }
+
+    private int getEstEuclidean(int x, int y, int gx, int gy){
+
+        double distance = Math.abs(Math.sqrt(Math.pow((gx-x), 2) + Math.pow((gy-y), 2)));
+        return (int)Math.round(distance);
+    }
+
+    private int getEstHeightDiff(int x, int y, int gx, int gy, TerrainMap m){
+        int currentHeight = m.getTmap()[y][x];
+        int goalHeight = m.getTmap()[gy][gx];
+
+        if(goalHeight - currentHeight < 0){
+            return getEstManhattan(x, y, gx, gy);
+        }
+        else{
+            return goalHeight - currentHeight;
         }
     }
 }

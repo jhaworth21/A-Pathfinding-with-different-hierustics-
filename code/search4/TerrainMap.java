@@ -1,4 +1,4 @@
-package search3;
+package search4;
 /**
  * @(#)TerrainMap.java
  * Terrain Maps for the Rambler's problem
