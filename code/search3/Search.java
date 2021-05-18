@@ -130,11 +130,11 @@ public abstract class Search {
 
   // select the next node
   private void selectNode(String strat) {
-    // if (strat == "depthFirst")
-    //   depthFirst();
-    // else if (strat == "breadthFirst")
-    //   breadthFirst();
-    // else
+    if (strat == "depthFirst")
+      depthFirst();
+    else if (strat == "breadthFirst")
+      breadthFirst();
+    else
       branchAndBound();
   }
 

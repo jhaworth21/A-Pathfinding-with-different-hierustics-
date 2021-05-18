@@ -32,14 +32,4 @@ public class Coords {
   public Coords getCoord(){
     return new Coords(this.y, this.x);
   }
-
-  public boolean equals(Coords c){
-    if(this.x == c.getx() && this.y == c.gety()){
-      return true;
-    }
-    else{
-      return false;
-    }
-  }
-
 }
